@@ -3,7 +3,9 @@ package com.example.pingport
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.compose.BackHandler
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pingport.ui.theme.PingPortTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,25 +44,49 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//アプリ全体の親。「今どこの画面か」の状態を待ち、一覧と詳細に切り替える
+fun PingPortApp(modifier: Modifier = Modifier) {
+    //選択中のチーム。null＝何も選んでない＝一覧画面
+    var selectedTeam by remember { mutableStateOf<Team?>(null) }
+    val team = selectedTeam
+    if (team == null) {
+        //一覧画面
+        TeamListScreen(
+            teams = dummyTeams,
+            onTeamClick = { tapped -> selectedTeam = tapped },
+            modifier = modifier
+        )
+    } else {
+        //詳細画面
+        BackHandler {
+            selectedTeam = null
+        }
+        TeamDetailScreen(team = team, modifier = modifier)
+    }
+}
 // チーム一覧画面（画面全体の部品）
 @Composable
-fun TeamListScreen(teams: List<Team>, modifier: Modifier = Modifier) {
+fun TeamListScreen(teams: List<Team>, onTeamClick: (Team) -> Unit, modifier: Modifier = Modifier) {
     // LazyColumn = スクロールできる縦並びリスト
     // 「画面に見えている分だけ描画する」ので、データが増えても軽い
     LazyColumn(modifier = modifier) {
         // items = リストの中身を1件ずつ取り出して表示する
         items(teams) { team ->
-            TeamCard(team = team)
+            TeamCard(
+                team = team,
+                onClick = { onTeamClick(team) }
+            )
         }
     }
 }
 
 // チーム1件分のカード（一覧の1行の部品）
 @Composable
-fun TeamCard(team: Team, modifier: Modifier = Modifier) {
+fun TeamCard(team: Team, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 8.dp) // カードの外側の
     ) {
         // Column = 縦に並べるレイアウト
