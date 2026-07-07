@@ -33,11 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PingPortTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // チーム一覧画面を表示する
-                    TeamListScreen(
-                        teams = dummyTeams,
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    PingPortApp(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -45,6 +41,7 @@ class MainActivity : ComponentActivity() {
 }
 
 //アプリ全体の親。「今どこの画面か」の状態を待ち、一覧と詳細に切り替える
+@Composable
 fun PingPortApp(modifier: Modifier = Modifier) {
     //選択中のチーム。null＝何も選んでない＝一覧画面
     var selectedTeam by remember { mutableStateOf<Team?>(null) }
@@ -123,6 +120,6 @@ fun recruitLabel(type: RecruitType): String {
 @Composable
 fun TeamListPreview() {
     PingPortTheme {
-        TeamListScreen(teams = dummyTeams)
+        TeamListScreen(teams = dummyTeams, onTeamClick = {})
     }
 }
