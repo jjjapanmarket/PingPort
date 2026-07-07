@@ -76,14 +76,14 @@ val dummyTeams = listOf(
         name = "UTTC Salzburg",
         country = "オーストリア",
         city = "ザルツブルク",
-        league = "卓球コーチ",
+        league = "オーストリアリーグ３部",
         level = TeamLevel.PRO,
-        recruitType = RecruitType.PLAYER,
+        recruitType = RecruitType.COACH,
         wantedPosition = "両ハンドドライブ型",
         wantedProfile = "指導に情熱がある方",
         hasSalary = true,
         hasHousing = true,
         practiceInfo = "週6回・トレーナー帯同",
-        contact = "recruit@parisping.example.com"
+        contact = "@salzburg_tt（Instagram）"
     )
 )
