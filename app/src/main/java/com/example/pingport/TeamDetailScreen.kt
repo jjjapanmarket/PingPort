@@ -7,48 +7,83 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pingport.ui.theme.PingPortTheme
 
+
 // チーム詳細画面（1チームの全情報を表示する）
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamDetailScreen(team: Team, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()) // 画面に収まらないときスクロールできるようにする
-            .padding(16.dp)
+fun TeamDetailScreen(team: Team, onBack: () -> Unit, modifier: Modifier = Modifier) {
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = { Text(team.name) },
+                // navigationIcon = 帯の左端。戻る矢印を置く定位置
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "戻る" // 目の不自由な人向けの読み上げテキスト
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary // 矢印も白に
+                )
+            )
+        }
     ) {
-        // チーム名（大きめの見出し）
-        Text(
-            text = team.name,
-            style = MaterialTheme.typography.headlineMedium
-        )
-        Text(
-            text = "${team.country}・${team.city}",
-            style = MaterialTheme.typography.bodyLarge
-        )
+        innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)      // まず帯とステータスバーの分を避ける
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)             // その内側に、いつもの余白
+        ) {
+            // チーム名（大きめの見出し）
+            Text(
+                text = team.name,
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Text(
+                text = "${team.country}・${team.city}",
+                style = MaterialTheme.typography.bodyLarge
+            )
 
-        Spacer(modifier = Modifier.height(16.dp)) // 縦方向の空白
-        HorizontalDivider() // 区切り線
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp)) // 縦方向の空白
+            HorizontalDivider() // 区切り線
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // 各項目を「ラベル + 内容」のセットで表示
-        DetailItem(label = "リーグ", value = team.league)
-        DetailItem(label = "レベル", value = levelLabel(team.level))
-        DetailItem(label = "募集", value = recruitLabel(team.recruitType))
-        DetailItem(label = "求めるポジション", value = team.wantedPosition)
-        DetailItem(label = "求める人物像", value = team.wantedProfile)
-        DetailItem(label = "給料", value = if (team.hasSalary) "あり" else "なし")
-        DetailItem(label = "住居提供", value = if (team.hasHousing) "あり" else "なし")
-        DetailItem(label = "練習環境", value = team.practiceInfo)
-        DetailItem(label = "連絡先", value = team.contact)
+            // 各項目を「ラベル + 内容」のセットで表示
+            DetailItem(label = "リーグ", value = team.league)
+            DetailItem(label = "レベル", value = levelLabel(team.level))
+            DetailItem(label = "募集", value = recruitLabel(team.recruitType))
+            DetailItem(label = "求めるポジション", value = team.wantedPosition)
+            DetailItem(label = "求める人物像", value = team.wantedProfile)
+            DetailItem(label = "給料", value = if (team.hasSalary) "あり" else "なし")
+            DetailItem(label = "住居提供", value = if (team.hasHousing) "あり" else "なし")
+            DetailItem(label = "練習環境", value = team.practiceInfo)
+            DetailItem(label = "連絡先", value = team.contact)
+        }
     }
 }
 
@@ -72,6 +107,6 @@ fun DetailItem(label: String, value: String) {
 @Composable
 fun TeamDetailPreview() {
     PingPortTheme {
-        TeamDetailScreen(team = dummyTeams[0])
+        TeamDetailScreen(team = dummyTeams[0], onBack = {})
     }
 }
