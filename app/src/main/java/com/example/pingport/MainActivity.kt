@@ -1,5 +1,7 @@
 package com.example.pingport
 
+import android.R
+import android.R.attr.title
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,9 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CheckboxDefaults.colors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import org.jetbrains.annotations.ApiStatus
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +39,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PingPortTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PingPortApp(modifier = Modifier.padding(innerPadding))
-                }
+                PingPortApp()
             }
         }
     }
@@ -62,17 +67,31 @@ fun PingPortApp(modifier: Modifier = Modifier) {
     }
 }
 // チーム一覧画面（画面全体の部品）
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeamListScreen(teams: List<Team>, onTeamClick: (Team) -> Unit, modifier: Modifier = Modifier) {
-    // LazyColumn = スクロールできる縦並びリスト
-    // 「画面に見えている分だけ描画する」ので、データが増えても軽い
-    LazyColumn(modifier = modifier) {
-        // items = リストの中身を1件ずつ取り出して表示する
-        items(teams) { team ->
-            TeamCard(
-                team = team,
-                onClick = { onTeamClick(team) }
+    Scaffold(
+        modifier = modifier,
+        // topBar = 画面上部の帯。タイトルを出す
+        topBar = {
+            TopAppBar(
+                title = { Text("PingPort") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
+        }
+    ) { innerPadding ->
+        // LazyColumn = スクロールできる縦並びリスト
+        LazyColumn(modifier = Modifier.padding(innerPadding)) {
+            // items = リストの中身を1件ずつ取り出して表示する
+            items(teams) { team ->
+                TeamCard(
+                    team = team,
+                    onClick = { onTeamClick(team) }
+                )
+            }
         }
     }
 }
