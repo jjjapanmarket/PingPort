@@ -39,7 +39,7 @@ fun TeamDetailScreen(team: Team, onBack: () -> Unit, modifier: Modifier = Modifi
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "戻る" // 目の不自由な人向けの読み上げテキスト
+                            contentDescription = "戻る"
                         )
                     }
                 },
@@ -54,10 +54,10 @@ fun TeamDetailScreen(team: Team, onBack: () -> Unit, modifier: Modifier = Modifi
         innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)      // まず帯とステータスバーの分を避ける
+                .padding(innerPadding)      
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)             // その内側に、いつもの余白
+                .padding(16.dp)
         ) {
             // チーム名（大きめの見出し）
             Text(
