@@ -1,4 +1,4 @@
-package com.example.pingport.ui.theme
+package com.example.pingport
 
 import androidx.compose.runtime.Composable
 import java.lang.reflect.Modifier
